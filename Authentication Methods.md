@@ -30,3 +30,13 @@ Each glyph maps to a Platonic solid, which has expected entropy levels.
 
 Run entropy-weight check to detect spoofed sequences that deviate from geometrically plausible paths.
 
+Packet Flow
+
+1. Agent A generates 8×8 matrix of glyphs
+2. Encodes each as Octa13 13-bit packet
+3. Assembles full stream → 832 bits
+4. Prepends Sierpiński signature
+5. Appends HMAC(Octa13_key, stream)
+6. Transmits across resonance gate
+7. Agent B decodes 8x8 Matrix into Octa13 13-bit Packet
+8. Agent B verifies signature, hash, glyph sequence

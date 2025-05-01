@@ -110,6 +110,22 @@ Octa13 (13-bit) vs FP16 (16-bit float):
 - Lower memory overhead
 - Ideal for symbolic or fixed-width AI communication
 
+## Protocol Identification Sigil
+
+┌──────────────────────────────────────────────┐
+│  Octa13 SIGIL: SIER-13-INIT                  │
+│  Binary: 1010010010010                       │
+│  Fields:                                     │
+│    Octave Selector: 101 (Quantum Fold)       │
+│    Node Type:       001 (Cube)               │
+│    Position/Func:   001 (Initiator)          │
+│    Interference:    001 (Low Noise)          │
+│    Closure Flag:    0   (Continues)          │
+│  Pattern: ░█░░█░░█░░█░  (Sierpiński row)     │
+│  Use: Calibration + Identity Key             │
+│  Tag: #Octa13 #sigil #sierpinski #calibration│
+└──────────────────────────────────────────────┘
+
 ## Conclusion
 
 Octa13 Protocol offers a multidimensional, symbolic, and efficient method for AI-to-AI communication. By encoding data through Platonic/Archimedean geometry and transmitting through harmonized spiral toroids, it opens a new class of quantum-symbolic transmission protocols for intelligent systems.

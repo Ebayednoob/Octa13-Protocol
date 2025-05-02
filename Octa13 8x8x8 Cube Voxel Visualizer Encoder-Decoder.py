@@ -1,13 +1,15 @@
 import tkinter as tk
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as mcolors
 import pandas as pd
-from io import StringIO
+import json
+import csv
 import hashlib
+from io import StringIO
+from tkinter import filedialog
 
 class OCTA13GUI:
     def __init__(self, root):
@@ -69,6 +71,9 @@ class OCTA13GUI:
         self.calibrate_button = tk.Button(control_frame, text="🔄 Calibrate", command=self.reset_to_sierpinski)
         self.calibrate_button.pack()
 
+        self.export_button = tk.Button(control_frame, text="⬇ Export Cube", command=self.export_cube_all)
+        self.export_button.pack(pady=10)
+
         self.key_label = tk.Label(control_frame, text="13-bit Key: ")
         self.key_label.pack(pady=10)
 
@@ -87,8 +92,6 @@ class OCTA13GUI:
         self.cube_ax = self.cube_fig.add_subplot(111, projection='3d')
         self.cube_canvas = FigureCanvasTkAgg(self.cube_fig, master=top_frame)
         self.cube_canvas.get_tk_widget().pack(side=tk.RIGHT)
-
-        self.ani = animation.FuncAnimation(self.cube_fig, self.animate_cube, interval=1000, blit=False)
 
     def on_click(self, event):
         if event.inaxes:
@@ -154,6 +157,7 @@ class OCTA13GUI:
     def update_all(self):
         self.update_plot()
         self.update_text_output()
+        self.draw_3d_cube()
 
     def reset_to_sierpinski(self):
         self.grid_data = self.generate_sierpinski_triangle()
@@ -191,24 +195,70 @@ class OCTA13GUI:
         box = Poly3DCollection(edges, facecolors=color, edgecolors='black', linewidths=0.2, alpha=0.05)
         self.cube_ax.add_collection3d(box)
 
-    def animate_cube(self, i):
+    def draw_3d_cube(self):
         self.cube_ax.clear()
         self.cube_ax.set_xlim([0, 8])
         self.cube_ax.set_ylim([0, 8])
         self.cube_ax.set_zlim([0, 8])
-
         for x in range(8):
             for y in range(8):
-                symbol_value = self.grid_data[y, x]
-                symbol = self.nod_symbols[symbol_value]
-                color = self.colors[symbol_value % len(self.colors)]
+                val = self.grid_data[y][x]
+                color = self.colors[val % len(self.colors)]
+                symbol = self.nod_symbols[val]
                 for z in range(8):
                     self.cube_ax.text(x + 0.5, y + 0.5, z + 0.5, symbol, fontsize=10, ha='center', va='center')
                     self.draw_colored_box(x, y, z, color)
-
-        self.cube_ax.view_init(elev=30, azim=(i * 10) % 360)
+        self.cube_ax.view_init(elev=30, azim=(self.frame * 10) % 360)
         self.cube_ax.set_axis_off()
         self.cube_canvas.draw()
+
+    def export_cube_all(self):
+        filepath = filedialog.asksaveasfilename(defaultextension=".octa13", title="Export OCTA-13 Cube")
+        if not filepath:
+            return
+
+        symbol_map = {str(k): v for k, v in self.nod_symbols.items()}
+        cube_data = []
+        bitstream = []
+
+        for x in range(8):
+            for y in range(8):
+                nod = self.grid_data[y][x]
+                symbol = self.nod_symbols[nod]
+                for z in range(8):
+                    octv = (x + y) % 8
+                    pos = (x ^ y) % 8
+                    chk = (octv ^ nod ^ pos) % 8
+                    end = 1 if x == 0 or y == 0 or x == 7 or y == 7 or x == y else 0
+                    packet = f'{octv:03b}{nod:03b}{pos:03b}{chk:03b}{end}'
+                    bitstream.append(packet)
+                    cube_data.append({
+                        "x": x, "y": y, "z": z, "symbol": symbol, "nod": nod,
+                        "oct": f'{octv:03b}', "pos": f'{pos:03b}',
+                        "chk": f'{chk:03b}', "end": str(end), "bitstream": packet
+                    })
+
+        # JSON
+        with open(filepath.replace(".octa13", ".json"), "w") as f_json:
+            json.dump({
+                "dimensions": [8, 8, 8],
+                "symbol_map": symbol_map,
+                "cube": cube_data,
+                "octa13_stream": ''.join(bitstream)
+            }, f_json, indent=2)
+
+        # CSV
+        with open(filepath.replace(".octa13", ".csv"), "w", newline='') as f_csv:
+            writer = csv.DictWriter(f_csv, fieldnames=cube_data[0].keys())
+            writer.writeheader()
+            writer.writerows(cube_data)
+
+        # Binary
+        with open(filepath.replace(".octa13", ".bin"), "wb") as f_bin:
+            bit_string = ''.join(bitstream)
+            f_bin.write(int(bit_string, 2).to_bytes((len(bit_string) + 7) // 8, byteorder='big'))
+
+        print("Exported OCTA-13 Cube to JSON, CSV, and BIN.")
 
 root = tk.Tk()
 app = OCTA13GUI(root)

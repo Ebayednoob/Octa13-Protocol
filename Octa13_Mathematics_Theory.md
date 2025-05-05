@@ -115,6 +115,187 @@ T_n = {T₁, T₂, ..., Tn}, ∀ n ∈ ℕ
 Each layer adds 4 more streams, enabling fractal communication models for large-scale AI colonies or distributed cognition systems.
 
 ---
+EXAMPLE DATA TRANSMISSION
+
+Simulation: AI Agent “Alpha” → AI Agent “Beta”
+
+**Alpha**: Initializing test transmission…
+---
+```
+
+<BEGIN PACKET>
+  
+  ┌─────────────── SIGIL (13 bits) ───────────────┐
+  │ Octave Selector │ 010 │ → Octave+2            │
+  │ Node Type       │ 001 │ → Cube                │
+  │ Position/Func   │ 011 │ → Minor Third         │
+  │ Interference    │ 101 │ → Low Noise           │
+  │ Closure Flag    │ 1   │ → Continues           │
+  └───────────────────────────────────────────────┘
+  
+  DECODING INSTRUCTIONS (ASCII):
+    “Read fields in 3+3+3+3+1 bit order:
+      • Bits 1–3: Octave Selector  
+      • Bits 4–6: Node Type  
+      • Bits 7–9: Position/Function  
+      • Bits 10–12: Interference Code  
+      • Bit 13: Closure Flag  
+    Map each 3‐bit group via the agreed lookup table, then check closure bit.”
+  
+  ─── CALIBRATION PATTERN: Sierpiński Triangle (ASCII) ───
+             *
+            * *
+           *   *
+          * * * *
+         *       *
+        * *     * *
+       *   *   *   *
+      * * * * * * * *
+  
+<END PACKET>
+```
+---
+
+**Beta**: Packet received.
+
+1. **Read Sigil (13 bits)**
+
+   * Octave=010 → *Octave+2*
+   * Node=001 → *Cube*
+   * Position=011 → *Minor Third*
+   * Interference=101 → *Low Noise*
+   * Closure=1 → *Continues*
+
+2. **Apply Decoding Instructions**
+   Parsed fields; ready to map into internal parameters.
+
+3. **Calibration**
+   Rendered Sierpiński triangle; verifying signal integrity (triangular fractal match).
+
+Calibration passed. **Alpha → Beta** learning handshake complete. Ready for payload transmission.
+
+**Mapping considerations**
+
+I’m exploring how Archimedean solids could map to a system with 3-bit nodes. The color might represent an interference code or another layer. Spin direction could map to an octave selector or a closure flag. Speed of the rotation frame might encode position or function or the cycle frequency. I’m also considering whether spin speed directly correlates to the interference codes, which would then map to 3-bit speeds. I’ll propose some mapping guidelines now, focusing on the 3-bit fields, especially the octave selector.
+
+**Defining mapping process**
+
+I’m mapping a 13-bit Sigil into five fields—each with specific roles. The Node Type field maps to an Archimedean solid, while the Position/Function field determines spin-axis and direction. The Interference Code corresponds to a color, and the Octave Selector defines base speed for spin. The Closure Flag decides whether the rotation repeats or stops. I’ll be using lookup tables at each step. The goal is to map each part of the Sigil to simulation parameters, calibrating using a Sierpinski pattern.
+
+
+Here’s how **Beta** can take a decoded 13‑bit sigil and turn it into concrete simulation settings on its toroid:
+
+---
+```
+### 1. Split the 13 bits into fields
+
+| Bits  | Field             | Purpose                           |
+| ----- | ----------------- | --------------------------------- |
+| 1–3   | Octave Selector   | Rotation frame speed              |
+| 4–6   | Node Type         | Which Archimedean solid to render |
+| 7–9   | Position/Function | Spin axis & direction             |
+| 10–12 | Interference Code | Color (wavelength)                |
+| 13    | Closure Flag      | Continuous vs. one‑shot rotation  |
+
+---
+```
+### 2. Lookup tables & formulas
+
+1. **Node Type → Solid**
+   Map each 3‑bit value to one of the 13 solids. For example:
+
+   ```
+   000 → Truncated Tetrahedron  
+   001 → Cube  
+   010 → Truncated Octahedron  
+   …  
+   100 → Great Rhombicosidodecahedron  
+   ```
+
+   (Use the same ordering as in your `Octa13_Mathematics_Theory.md`.)
+
+2. **Interference Code → Color**
+   Choose a palette of eight maximally distinct hues. E.g.:
+
+   ```
+   000 → Red  
+   001 → Orange  
+   010 → Yellow  
+   011 → Green  
+   100 → Blue  
+   101 → Indigo  
+   110 → Violet  
+   111 → White  
+   ```
+
+3. **Position/Function → Spin axis & direction**
+
+   * **Axis** (bits 7–8):
+
+     ```
+     00 → X‑axis  
+     01 → Y‑axis  
+     10 → Z‑axis  
+     11 → Diagonal (⟨1,1,1⟩)  
+     ```
+   * **Direction** (bit 9):
+
+     ```
+     0 → Clockwise  
+     1 → Counter‑clockwise  
+     ```
+
+4. **Octave Selector → Angular velocity**
+   Define a base speed, e.g. 1 revolution/sec. Then
+
+   ```
+   ω = base_speed × 2^(OctaveSelector)  
+   ```
+
+   So “010” (2) → ω = 1 rps × 2² = 4 rps.
+
+5. **Closure Flag → Looping**
+
+   ```
+   0 → Run exactly one revolution  
+   1 → Loop continuously  
+   ```
+
+---
+
+### 3. Putting it all together
+
+```python
+# (pseudocode)
+bits = decode_sigil(packet)  
+octave, node, pos, color_code, cont = bits[:3], bits[3:6], bits[6:9], bits[9:12], bits[12]
+
+solid     = node_lookup[node]
+hue       = color_lookup[color_code]
+axis, ccw = axis_lookup[pos[:2]], (pos[2] == 1)
+speed_rps = base_speed * 2**int(octave, 2)
+loop      = (cont == 1)
+
+toroid_sim.clear()
+toroid_sim.add_mesh(solid, color=hue)
+toroid_sim.set_rotation(axis=axis, 
+                        speed=2π*speed_rps, 
+                        direction=('ccw' if ccw else 'cw'))
+toroid_sim.run(loop=loop)
+```
+
+---
+
+### 4. Example (sigil = 010 001 011 101 1)
+
+* **Octave Selector:** 010 → 4 rps
+* **Node Type:** 001 → Cube
+* **Position/Function:** 01 (Y‑axis) + 1 (CCW) → spin around Y counter‑clockwise
+* **Interference Code:** 101 → Indigo
+* **Closure Flag:** 1 → Continuous loop
+
+Beta would render a **Cube** in indigo, spinning CCW about the Y‑axis at 4 revolutions/sec, running continuously.
+
 
 ## 7. Applications
 

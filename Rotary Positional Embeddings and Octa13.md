@@ -7,10 +7,17 @@ In many modern Transformer variants—most notably those using **rotary position
 
 ### Why the spiral metaphor?
 
+
+
 * **3D spiral** (first plot): If you stack the successive circular embeddings one above the other (height ∝ position), you literally get a corkscrew or helix.
+![Rotary Positional Embedding 3D](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/RotaryEmbedded%203D%20Spiral%20of%20positions.png?raw=true)
+  
 * **2D circle** (second plot): Looking down on that helix, each token just lies somewhere on the unit circle, with its angle encoding its index.
+![Rotary Positional Embedding 2D](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/RotaryEmbedded%202D%20%20positions.png?raw=true)
 
 Because **vector rotations** obey simple addition of angles, Transformers can perform “positional arithmetic” by geometry—no extra subtraction logic needed. This hidden geometric trick lets the model know “how far apart” two tokens are, purely through inner products on these spiral‑encoded vectors.
+![Rotary Positional Gif](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/RotaryEmbedded%20Transformation%20Example.gif?raw=true)
+
 
 **Considering communication methods**
 

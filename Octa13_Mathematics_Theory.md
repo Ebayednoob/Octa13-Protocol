@@ -24,7 +24,7 @@ Each bit represents a discrete harmonic state, not merely a binary value. This e
 ---
 
 ## 2. Geometric Glyph Encoding
-
+![alt text](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Wireframe%20Solids.gif?raw=true)
 ### 2.1 Geometric Basis: Archimedean Solids
 Each shape in the 13-solids set contributes the following data points:
 - `V` = number of vertices

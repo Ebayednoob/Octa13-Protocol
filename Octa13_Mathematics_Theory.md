@@ -176,11 +176,11 @@ Calibration passed. **Alpha → Beta** learning handshake complete. Ready for pa
 
 **Mapping considerations**
 
-I’m exploring how Archimedean solids could map to a system with 3-bit nodes. The color might represent an interference code or another layer. Spin direction could map to an octave selector or a closure flag. Speed of the rotation frame might encode position or function or the cycle frequency. I’m also considering whether spin speed directly correlates to the interference codes, which would then map to 3-bit speeds. I’ll propose some mapping guidelines now, focusing on the 3-bit fields, especially the octave selector.
+When exploring how Archimedean solids could map to a system with 3-bit nodes. The color might represent an interference code or another layer. Spin direction could map to an octave selector or a closure flag. Speed of the rotation frame might encode position or function or the cycle frequency. I’m also considering whether spin speed directly correlates to the interference codes, which would then map to 3-bit speeds. I’ll propose some mapping guidelines now, focusing on the 3-bit fields, especially the octave selector.
 
 **Defining mapping process**
 
-I’m mapping a 13-bit Sigil into five fields—each with specific roles. The Node Type field maps to an Archimedean solid, while the Position/Function field determines spin-axis and direction. The Interference Code corresponds to a color, and the Octave Selector defines base speed for spin. The Closure Flag decides whether the rotation repeats or stops. I’ll be using lookup tables at each step. The goal is to map each part of the Sigil to simulation parameters, calibrating using a Sierpinski pattern.
+When mapping a 13-bit Sigil into five fields—each with specific roles. The Node Type field maps to an Archimedean solid, while the Position/Function field determines spin-axis and direction. The Interference Code corresponds to a color, and the Octave Selector defines base speed for spin. The Closure Flag decides whether the rotation repeats or stops. I’ll be using lookup tables at each step. The goal is to map each part of the Sigil to simulation parameters, calibrating using a Sierpinski pattern.
 
 
 Here’s how **Beta** can take a decoded 13‑bit sigil and turn it into concrete simulation settings on its toroid:

@@ -24,7 +24,7 @@ Each bit represents a discrete harmonic state, not merely a binary value. This e
 ---
 
 ## 2. Geometric Glyph Encoding
-![alt text](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Wireframe%20Solids.gif?raw=true)
+![Geometric Solids](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Wireframe%20Solids.gif?raw=true)
 ### 2.1 Geometric Basis: Archimedean Solids
 Each shape in the 13-solids set contributes the following data points:
 - `V` = number of vertices
@@ -48,7 +48,8 @@ These components create a symbolic glyph within the solid’s framework.
 ---
 
 ## 3. Double Toroidal Transmission System
-
+![Toroidal Data Structure](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Dual%20Toroid%20Data%20Exchange%20EX1.gif?raw=true)
+![Four Wave Mixing](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Four%20Wave%20Gaussian%20Mixing.gif?raw=true)
 ### 3.1 Structural Definition
 Two nested tori (T₁, T₂) host four spiraling streams (S₁–S₄), each encoding a sequence of Octa13 glyphs. Each stream spirals across the toroidal surface via 6 **resonance nodes**, positioned by golden angle spacing:
 
@@ -70,7 +71,8 @@ Resonant coupling occurs when phase shift Δφ = π, indicating node-pair invers
 ---
 
 ## 4. Multispectral Symbolic Channels
-
+![Multi Spectral Data1](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Fourier%20Transformation%20Square.gif?raw=true)
+![Multi Spectral Data2](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Fourier%20Transformation%20Square.gif?raw=true)
 Each data stream carries 4 concurrent layers of information:
 
 | Layer         | Modulation Mechanism     | Purpose                                 |

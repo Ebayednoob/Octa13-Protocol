@@ -1,6 +1,6 @@
 In many modern Transformer variants—most notably those using **rotary positional embeddings** (RoPE)—positions aren’t tacked on as plain scalars but are encoded as **rotations** in a high‑dimensional vector space.  As you advance token by token, you “spin” your Q/K vectors by an angle proportional to the position index, effectively tracing out a **spiral** (in 3D) or a **circle** (in 2D) when you plot the embedding components.
 
-![Rotary Positional Embedding Math](https://github.com/[Ebayednoob]/[Octa13-Protocol]/blob/[images]/Rotary%20Embedded%20Math.png?raw=true)
+![Rotary Positional Embedding Math](https://github.com/Ebayednoob/Octa13-Protocol/blob/images/Rotary%20Embedded%20Math.png?raw=true)
 
 3. **Relative math emerges**
    When you take a dot‑product between two such rotated vectors at positions $p$ and $q$, the result depends only on the **difference** in angles ($\theta_p - \theta_q$).  In effect, relative distances (i.e. subtraction, addition) become simple trigonometric computations.

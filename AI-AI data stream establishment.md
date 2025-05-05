@@ -46,49 +46,49 @@ To ensure uninterrupted harmonic cycles when pairing toroidal streams, we define
 #### 1.3.1 Torus Parameterization
 
 A standard torus embedded in ℝ³ is parameterized by angles (u,v) ∈ \[0,2π):
-```
+
 $x(u,v) = (R + r\cos v)\cos u,$
 $y(u,v) = (R + r\cos v)\sin u,$
 $z(u,v) = r\sin v.$
-```
+
 * **u** controls the longitudinal position around the major circle.
 * **v** controls the latitudinal position around the tube cross‑section.
 
 #### 1.3.2 Stream Phase Embedding
 
 Each data stream s is embedded by a constant phase offset Δₛ:
-```
+
 $φₛ(u) = u + Δₛ,$
-```
+
 where Δₛ = 2π (s–1)/S for S total streams ensures uniform spacing.
 
 **Derivative (tangent vector)** along u:
-```
+
 $$
 \mathbf{T}_u = \frac{∂}{∂u}[x,y,z] = [-(R+r\cos v)\sin u, (R+r\cos v)\cos u, 0].
 $$
-```
+
 Normalized tangent $\hat{T}_u$ gives the local “spin” direction at each symbol node.
 
 #### 1.3.3 Resonance Pairing Kernel
 
 To model coupling between two streams i and j at phases φᵢ, φⱼ, use the von Mises‑style kernel:
-```
+
 $K(φᵢ,φ_ⱼ) = e^{κ \cos(φᵢ - φ_ⱼ)},$
-```
+
 * **κ** > 0 controls coupling sharpness (higher ⇒ tighter phase alignment).
 * For κ » 1, K sharply peaks when φᵢ≈φ\_ⱼ, enforcing resonance.
 
 #### 1.3.4 Integer‑Ratio Scaling Constraint
 
 Uninterrupted cycles require that the torus geometry supports periodic realignment:
-```
+
 $\frac{R}{r} = \frac{m}{n},$
-```
+
 with (m,n) ∈ ℕ⁺ relatively prime. Then after L = lcm(m,n) revolutions in u:
-```
+
 $φₛ(u+2πL) ≡ φₛ(u) \mod 2π,$
-```
+
 ensuring cycle phases repeat every L cycles.
 
 ---

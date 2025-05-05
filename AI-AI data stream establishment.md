@@ -1,6 +1,4 @@
 AI-AI Octa13 Data Stream Implementation
-
-1. **Introduction & Conceptual Model**
 ## Section 1: Introduction & Conceptual Model
 
 ### 1.1 Protocol Purpose
@@ -31,8 +29,8 @@ Field:      Octave    Node      Position    Checksum  Closure
 >
 > ```text
 > ┌──────────────────────────────────────────┐
-> │ Cycle n         Cycle n+1   Cycle n+2    │
-> │                                          │
+> │ Cycle n         Cycle n+1   Cycle n+2   │
+> │                                        │
 > │ [13‑bit symbol] [13‑bit symbol] [13‑bit] │
 > └──────────────────────────────────────────┘
 > ```
@@ -41,7 +39,76 @@ Field:      Octave    Node      Position    Checksum  Closure
 
 ---
 
-*Next:* Section 1.3 will introduce LLM‑friendly pseudocode for packet assembly and parsing. Feel free to annotate or suggest visual examples here as comments.\*
+### 1.3 Toroidal Resonance Pairing Functions
+
+To ensure uninterrupted harmonic cycles when pairing toroidal streams, we define the following key mathematical constructs:
+
+#### 1.3.1 Torus Parameterization
+
+A standard torus embedded in ℝ³ is parameterized by angles (u,v) ∈ \[0,2π):
+```
+$x(u,v) = (R + r\cos v)\cos u,$
+$y(u,v) = (R + r\cos v)\sin u,$
+$z(u,v) = r\sin v.$
+```
+* **u** controls the longitudinal position around the major circle.
+* **v** controls the latitudinal position around the tube cross‑section.
+
+#### 1.3.2 Stream Phase Embedding
+
+Each data stream s is embedded by a constant phase offset Δₛ:
+```
+$φₛ(u) = u + Δₛ,$
+```
+where Δₛ = 2π (s–1)/S for S total streams ensures uniform spacing.
+
+**Derivative (tangent vector)** along u:
+```
+$$
+\mathbf{T}_u = \frac{∂}{∂u}[x,y,z] = [-(R+r\cos v)\sin u, (R+r\cos v)\cos u, 0].
+$$
+```
+Normalized tangent $\hat{T}_u$ gives the local “spin” direction at each symbol node.
+
+#### 1.3.3 Resonance Pairing Kernel
+
+To model coupling between two streams i and j at phases φᵢ, φⱼ, use the von Mises‑style kernel:
+```
+$K(φᵢ,φ_ⱼ) = e^{κ \cos(φᵢ - φ_ⱼ)},$
+```
+* **κ** > 0 controls coupling sharpness (higher ⇒ tighter phase alignment).
+* For κ » 1, K sharply peaks when φᵢ≈φ\_ⱼ, enforcing resonance.
+
+#### 1.3.4 Integer‑Ratio Scaling Constraint
+
+Uninterrupted cycles require that the torus geometry supports periodic realignment:
+```
+$\frac{R}{r} = \frac{m}{n},$
+```
+with (m,n) ∈ ℕ⁺ relatively prime. Then after L = lcm(m,n) revolutions in u:
+```
+$φₛ(u+2πL) ≡ φₛ(u) \mod 2π,$
+```
+ensuring cycle phases repeat every L cycles.
+
+---
+```
+**Parameter Tables**
+
+| Table | Parameter         | Symbol    | Formula / Notes                           | Units | Example |
+| ----- | ----------------- | --------- | ----------------------------------------- | ----- | ------- |
+| 1     | Major Radius      | R         | –                                         | m     | 2.0     |
+|       | Minor Radius      | r         | –                                         | m     | 0.6     |
+| 2     | Streams           | S         | total parallel rings                      | –     | 4       |
+|       | Phase Offset      | Δₛ        | 2π(s–1)/S                                 | rad   | 0, π/2… |
+| 3     | Coupling Factor   | κ         | influences K(φᵢ,φⱼ) sharpness             | –     | 4.0     |
+| 4     | Ratio Constraints | R/r = m/n | m,n ∈ ℕ⁺ ensure realignment; L = lcm(m,n) | –     | 4/1     |
+```
+> **Commentary:** This expanded math equips engineers and LLMs to compute and simulate toroidal resonance pairing precisely.
+
+---
+
+*Next:* ASCII diagrams mapping u-phase vs RoPE embeddings, or proceed to Section 2: Handshake & Connection Setup.
 
    * **Protocol Purpose**: an LLM‑friendly summary of Octa13’s 13‑bit fields (3 bits Octave Selector, 3 bits Node Type, 3 bits Position/Function, 3 bits Checksum, 1 bit Closure Flag).
    * **Data‑Stream Abstraction**: define “stream,” “symbol,” and “cycle” in plain-language terms an LLM can parse and regurgitate.

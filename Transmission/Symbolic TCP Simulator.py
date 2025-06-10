@@ -15,6 +15,7 @@ import json
 import sys
 import socket
 import threading
+import struct # For creating binary data
 
 
 # Constants
@@ -131,6 +132,7 @@ class OCTA13Visualizer:
 
         # --- Data Streaming Setup ---
         self.stream_mode = stream_mode
+        self.binary_stream_mode = tk.BooleanVar(value=False) # Add a variable for binary mode
         if self.stream_mode == 'tcp':
             self.server_socket = None
             self.client_sockets = []
@@ -227,6 +229,7 @@ class OCTA13Visualizer:
         self._build_packet_data_tab()
         self._build_codex_tab()
         self._build_transmission_tab()
+        self._build_tcp_output_tab() # New Tab
         self._build_mission_tab()
         self._build_explorer_tab()
         self._build_quaternion_tab()
@@ -446,6 +449,45 @@ class OCTA13Visualizer:
         self.canvas_trans_dest = FigureCanvasTkAgg(self.fig_trans_dest, master=self.dest_toroid_frame)
         self.canvas_trans_dest.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.fig_trans_dest.tight_layout(pad=0.2)
+
+    def _build_tcp_output_tab(self):
+        """Builds the GUI for the TCP/Binary Output tab."""
+        tab_frame = tk.Frame(self.notebook, bg="black", padx=10, pady=10)
+        self.notebook.add(tab_frame, text='TCP/Binary Output')
+
+        # Top frame for controls and live JSON view
+        top_frame = tk.Frame(tab_frame, bg="black")
+        top_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        top_frame.grid_columnconfigure(0, weight=1)
+        top_frame.grid_rowconfigure(1, weight=1)
+
+        controls_frame = tk.Frame(top_frame, bg="black")
+        controls_frame.grid(row=0, column=0, sticky="ew", pady=(0,10))
+        
+        tk.Label(controls_frame, text="Live Frame Output:", fg="#61dafb", bg="black", font=("Arial", 12, "bold")).pack(side=tk.LEFT)
+        
+        # Checkbox to switch between JSON and Binary streaming
+        binary_check = tk.Checkbutton(controls_frame, text="Stream Binary Data", variable=self.binary_stream_mode,
+                                      fg="#FFD700", bg="black", selectcolor="black", activebackground="black",
+                                      activeforeground="#FFD700", font=("Arial", 10, "bold"))
+        binary_check.pack(side=tk.RIGHT, padx=10)
+
+
+        self.tcp_output_text = scrolledtext.ScrolledText(top_frame, wrap=tk.NONE, bg="#1c1e22", fg="white",
+                                                          font=("Courier New", 10), relief=tk.FLAT, borderwidth=0)
+        self.tcp_output_text.grid(row=1, column=0, sticky="nsew")
+
+        # Bottom frame for explanation
+        bottom_frame = tk.Frame(tab_frame, bg="black")
+        bottom_frame.pack(fill=tk.BOTH, expand=True)
+        bottom_frame.grid_columnconfigure(0, weight=1)
+        bottom_frame.grid_rowconfigure(0, weight=1)
+        
+        explanation_text = scrolledtext.ScrolledText(bottom_frame, wrap=tk.WORD, bg="#282c34", fg="white",
+                                                      font=("Arial", 10), relief=tk.FLAT, borderwidth=0, height=12)
+        explanation_text.pack(fill=tk.BOTH, expand=True)
+        self._insert_binary_explanation(explanation_text)
+        explanation_text.config(state=tk.DISABLED)
 
     def _build_mission_tab(self):
         mission_tab_frame = tk.Frame(self.notebook, bg="black", padx=20, pady=20)
@@ -788,6 +830,51 @@ In this model, the system transmits just 4 OCTA-13 packets. The full 21D state i
         text_widget.insert(tk.END, explanation.strip())
         text_widget.config(state=tk.DISABLED)  # Make it read-only
 
+    def _insert_binary_explanation(self, text_widget):
+        """Populates the explanation for the TCP/Binary output tab."""
+        text_widget.config(state=tk.NORMAL)
+        text_widget.delete('1.0', tk.END)
+        
+        explanation = """
+--- Data Stream Output Formats ---
+
+This tab shows a sample of the data being broadcast for each frame. The format can be toggled between human-readable JSON and machine-efficient Binary.
+
+1. JSON Format (Default)
+Human-readable, flexible, but verbose. Good for debugging. Each message is a single line of JSON.
+- frame: The master clock/synchronization key.
+- packets: A list containing one object for each active data stream in that frame.
+
+2. Binary Format (Toggleable)
+Extremely compact and fast for machine-to-machine communication. This is crucial for performance-critical systems. The stream is a sequence of binary packets.
+
+--- Proposed Binary Packet Structure for Quaternion Decoders ---
+
+To efficiently transmit data that a downstream agent can use to reconstruct quaternions, we can define a fixed-size binary packet. The key is that the symbols (shape, color, spin) are just *pointers* or *indices*. The decoder will have a corresponding "codex" to look up what these indices mean (e.g., Symbol index 2 maps to a specific base quaternion).
+
+A potential 20-byte packet structure for EACH data point in a stream:
+
+| Field            | Bytes | Type         | Description                                        |
+|------------------|-------|--------------|----------------------------------------------------|
+| Frame Index      | 4     | Unsigned Int | The master clock (`I`) for sync.                   |
+| Stream ID        | 1     | Unsigned Int | Which stream this packet belongs to (`B`).         |
+| Symbol Index     | 1     | Unsigned Int | Index into the `symbols` array (`B`).              |
+| Color Index      | 1     | Unsigned Int | Index into the `colors` array (`B`).               |
+| Spin Index       | 1     | Unsigned Int | Index into the `spins` array (`B`).                |
+| U-Coordinate     | 4     | Float        | Toroidal coordinate u (`f`).                       |
+| V-Coordinate     | 4     | Float        | Toroidal coordinate v (`f`).                       |
+| Status Flags     | 1     | Byte         | Bit 0: Is Overridden. Bits 1-7: Reserved.        |
+| Reserved         | 3     | ---          | Padding for alignment and future quaternion data. |
+| **Total Size** | **20**|              |                                                    |
+
+struct Format String: `<IBBBBffB3x`
+
+Consideration for Quaternions:
+The 3 reserved bytes could be used in a future version. For example, a single byte could encode a "quaternion modifier" index, which the decoder uses to perturb a base quaternion associated with the main symbol. Or, the entire packet structure could be expanded to include four 4-byte floats for a full (w, x, y, z) quaternion, replacing the symbolic indices for a higher-fidelity stream.
+"""
+        text_widget.insert(tk.END, explanation.strip())
+        text_widget.config(state=tk.DISABLED)
+
     def _update_explorer_polygon_visualization(self):
         """Draws the selected polygon, color, spin, and intermediate points in the explorer tab."""
         ax = self.ax_explorer
@@ -1107,7 +1194,9 @@ The Octa13 symbolic protocol, by integrating these ideas, aims for a system that
                 current_tab_index = self.notebook.index(self.notebook.select())
                 if current_tab_index == 3:  # Toroid Transmission
                     self.update_transmission_tab_plots()
-                elif current_tab_index == 7:  # Polygon Analysis
+                elif current_tab_index == 4: # TCP/Binary Output
+                    self.update_tcp_output_tab(current_frame_packets)
+                elif current_tab_index == 8:  # Polygon Analysis
                     self.update_polygon_analysis_tab()
 
         except (tk.TclError, IndexError):
@@ -1115,12 +1204,37 @@ The Octa13 symbolic protocol, by integrating these ideas, aims for a system that
 
         # --- Stream the data out ---
         if current_frame_packets:
-            json_output = json.dumps({'frame': self.frame_index, 'packets': current_frame_packets})
-            if self.stream_mode == 'stdout':
-                print(json_output)
-                sys.stdout.flush()
-            elif self.stream_mode == 'tcp':
-                self.broadcast_data(json_output)
+            if self.binary_stream_mode.get():
+                # Create and stream binary data
+                binary_packets = b''
+                for packet in current_frame_packets:
+                    symbol_idx = symbols.index(packet['symbol'])
+                    color_idx = colors.index(packet['color'])
+                    spin_idx = spins.index(packet['spin'])
+                    status_flags = 1 if packet['is_overridden'] else 0
+                    
+                    # Pack the data into a binary format
+                    # < = little-endian, I = unsigned int (4), B = unsigned char (1), f = float (4), x = padding
+                    binary_packets += struct.pack('<IBBBBffB3x', 
+                                                 packet['frame_index'],
+                                                 packet['stream_id'],
+                                                 symbol_idx,
+                                                 color_idx,
+                                                 spin_idx,
+                                                 packet['u_coord'],
+                                                 packet['v_coord'],
+                                                 status_flags)
+                if self.stream_mode == 'tcp':
+                    self.broadcast_data(binary_packets, is_binary=True)
+
+            else:
+                # Stream JSON data
+                json_output = json.dumps({'frame': self.frame_index, 'packets': current_frame_packets})
+                if self.stream_mode == 'stdout':
+                    print(json_output)
+                    sys.stdout.flush()
+                elif self.stream_mode == 'tcp':
+                    self.broadcast_data(json_output, is_binary=False)
 
 
         self.root.after(self.animation_delay_ms.get(), self.advance_frame_loop)
@@ -1228,6 +1342,37 @@ The Octa13 symbolic protocol, by integrating these ideas, aims for a system that
                             f"-" * 40 + "\n")
                 self.packet_data_text.insert(tk.END, data_str)
         self.packet_data_text.config(state=tk.DISABLED)
+
+    def update_tcp_output_tab(self, current_frame_packets):
+        self.tcp_output_text.config(state=tk.NORMAL)
+        self.tcp_output_text.delete('1.0', tk.END)
+        if not current_frame_packets:
+            self.tcp_output_text.insert(tk.END, "No packet data generated for this frame.")
+        else:
+            if self.binary_stream_mode.get():
+                header = f"--- FRAME {self.frame_index}: BINARY STREAM (showing hex representation) ---\n"
+                self.tcp_output_text.insert(tk.END, header)
+                binary_packets = b''
+                for packet in current_frame_packets:
+                    symbol_idx = symbols.index(packet['symbol'])
+                    color_idx = colors.index(packet['color'])
+                    spin_idx = spins.index(packet['spin'])
+                    status_flags = 1 if packet['is_overridden'] else 0
+                    
+                    binary_packets += struct.pack('<IBBBBffB3x', 
+                                                 packet['frame_index'], packet['stream_id'],
+                                                 symbol_idx, color_idx, spin_idx,
+                                                 packet['u_coord'], packet['v_coord'], status_flags)
+                # Show hex representation for visualization
+                hex_representation = binary_packets.hex(' ')
+                self.tcp_output_text.insert(tk.END, hex_representation)
+            else:
+                header = f"--- FRAME {self.frame_index}: JSON STREAM ---\n"
+                self.tcp_output_text.insert(tk.END, header)
+                json_output = json.dumps({'frame': self.frame_index, 'packets': current_frame_packets}, indent=2)
+                self.tcp_output_text.insert(tk.END, json_output)
+
+        self.tcp_output_text.config(state=tk.DISABLED)
 
     def _draw_torus_base_and_nodes(self, ax, nodes_list, elev, azim, is_destination_torus=False):
         ax.clear()
@@ -1582,12 +1727,16 @@ The Octa13 symbolic protocol, by integrating these ideas, aims for a system that
             except OSError:
                 break # Socket was likely closed
 
-    def broadcast_data(self, data):
+    def broadcast_data(self, data, is_binary=False):
         with self.lock:
             dead_sockets = []
+            
+            # For JSON, append a newline. For binary, the structure is fixed-size, so no delimiter is needed.
+            message = data if is_binary else data.encode('utf-8') + b'\n'
+
             for client_socket in self.client_sockets:
                 try:
-                    client_socket.sendall(data.encode('utf-8') + b'\n')
+                    client_socket.sendall(message)
                 except (socket.error, BrokenPipeError):
                     dead_sockets.append(client_socket)
             

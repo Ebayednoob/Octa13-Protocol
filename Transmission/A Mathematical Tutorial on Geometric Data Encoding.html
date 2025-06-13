@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Mathematical Tutorial on Geometric Data Encoding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMVIARBECHERiPhvsEtHxyzJysyyGOLOUbASJAQCNRTGDpgd" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0i8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURPl3dqSdxDYMZPuLv2myIqS3VEKDNkycHysLGxW4LqtBBeLFINlhn" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+        }
+        .step.active .step-circle {
+            background-color: #4338ca;
+            color: white;
+        }
+        .step.active .step-title {
+            font-weight: 600;
+            color: #4338ca;
+        }
+        .step .step-circle {
+            transition: all 0.3s ease;
+        }
+        .step-line {
+            height: calc(100% - 2rem);
+        }
+        .katex-display {
+            padding: 0.5rem 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.25rem;
+        }
+        .phase-box {
+            background-color: #f9fafb; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
+            margin-top: 1.5rem;
+        }
+        .prose {
+            max-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-700">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">A Mathematical Tutorial on Geometric Data Encoding</h1>
+            <p class="mt-2 text-xl text-gray-600">Laying the Foundation for Symmetry-Aware Symbolic AI</p>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Sidebar with steps -->
+            <aside class="w-full md:w-1/4">
+                <nav id="steps-nav" class="space-y-4">
+                    <!-- Steps will be dynamically inserted here -->
+                </nav>
+            </aside>
+
+            <!-- Main content -->
+            <main class="w-full md:w-3/4">
+                <div id="tutorial-content" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg prose">
+                    <!-- Step content will be dynamically inserted here -->
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button id="prev-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Previous</button>
+                    <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Next</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATA ---
+            const steps = [
+                {
+                    title: "Part I: The Philosophy of Encoding",
+                    content: `
+                        <h2 class="text-3xl font-bold mb-4">Part I: The Philosophy of Encoding</h2>
+                        <p>The path to discovering fundamental symbolic laws from data begins not with the learning algorithm, but with the data's representation. Standard machine learning often treats data as generic vectors, ignoring any inherent structure. This is inefficient. If a system possesses a known symmetry, encoding that symmetry into the data representation is the single most powerful form of prior knowledge we can provide.</p>
+                        <p>The goal of Geometric Data Encoding is to create data structures that are not merely containers for numbers, but are mathematical objects that intrinsically possess the symmetries of the system under study. An AI that operates on these structures is biased, by design, to discover laws that respect these symmetries. This is the difference between learning that a law is rotationally invariant after seeing a million rotated examples, and knowing it must be from the start.</p>
+                        <h3>The Genesis Codex</h3>
+                        <p>We do not begin from a vacuum. The initial framework for understanding is provided by a <strong>Genesis Codex</strong>. This is a formal protocol that defines two things:</p>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li><strong>Semantic Mapping:</strong> A declaration of what the raw numbers in a data packet mean. For example, mapping the four components of a quaternion to symbols for 'intensity' and 'spin vector'.</li>
+                            <li><strong>The Operator Basis Set:</strong> The initial set of allowed mathematical operations (symbols) that the AI can use to construct formulas. This basis set must contain operators that are natural to the geometry of the data.</li>
+                        </ol>
+                        <p>This tutorial will build the Genesis Codex for systems with rotational symmetry, from a single point to an N-sided polygon.</p>
+                    `
+                },
+                {
+                    title: "Part II: The Geometric Alphabet",
+                    content: `
+                        <h2 class="text-3xl font-bold mb-4">Part II: The Geometric Alphabet</h2>
+                        <p>We now define a hierarchy of geometric structures in distinct phases, building from the simple to the complex. Each phase defines a set of objects, their symmetries, and the natural operators that act upon them.</p>
+                        
+                        <div class="phase-box">
+                            <h3 class="mt-0">Phase A: Foundational Units</h3>
+                            <p>This phase defines the fundamental building blocks of our geometric language.</p>
+                            <p><strong>Level 0: The Point (0-gon)</strong><br/>
+                            The most basic unit is a single point, which can possess a rich internal structure. A quaternion, $q \\in \\mathbb{H}$, is an ideal representation for a point with both magnitude and orientation.
+                            $$q = w + x\\mathbf{i} + y\\mathbf{j} + z\\mathbf{k} \\quad (w,x,y,z \\in \\mathbb{R})$$
+                            The state of a point, $\\phi_k$, is thus represented by a quaternion $q_k$.
+                            </p>
+                            <p><strong>Level 1: The Line (2-gon)</strong><br/>
+                            This is the simplest relational structure: two points, $\\phi_0$ and $\\phi_1$, connected by an edge. Its symmetry is the permutation group $S_2$, which swaps the nodes. Operators should be either symmetric or anti-symmetric under this swap, such as the symmetric sum $(\\phi_0 + \\phi_1)$ or the anti-symmetric difference $(\\phi_1 - \\phi_0)$.</p>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="mt-0">Phase B: The Primary Vector Group of Three</h3>
+                            <p>This phase focuses on the first, most fundamental non-trivial relational structure: the triangle. This "group of three" serves as the archetype for all cyclic systems.</p>
+                            <p><strong>Level 3: The Triangle (3-gon)</strong><br/>
+                            The system is defined by a vector group of three states, $\\{\\phi_k\\}_{k=0}^2$, arranged in a cycle. Its defining characteristic is invariance under the cyclic group $Z_3$. Any valid physical law we discover must respect this 3-fold rotational symmetry $k \\to (k+1) \\pmod 3$.</p>
+                            <p><strong>Invariant Operator Basis for the Triangle:</strong> We must construct our initial "Genesis" operators to be explicitly invariant under $Z_3$ symmetry.
+                                <ul class="list-disc list-inside ml-4 mt-2">
+                                    <li><strong>Global Aggregation (e.g., "Potential Energy"):</strong> A sum over a local property, which is inherently symmetric. Example: $V = \\sum_{k=0}^2 h(\\phi_k)$, like the total Intensity $\\sum ||\\phi_k||$.</li>
+                                    <li><strong>Circulation (e.g., "Kinetic Energy"):</strong> A sum over interactions between adjacent nodes. This measures the "stress" or "flow" in the system. Example: $T = \\sum_{k=0}^2 g(\\phi_k, \\phi_{k+1})$, like the total squared difference $\\sum ||\\phi_{k+1} - \\phi_k||^2$.</li>
+                                    <li><strong>Symmetrized Products:</strong> For quaternions, we can define interaction terms like the real part of the cyclic product of relative rotations: $\\text{Re}(\\bar{q}_0q_1 \\cdot \\bar{q}_1q_2 \\cdot \\bar{q}_2q_0)$. This measures the total "twist" in the system.</li>
+                                </ul>
+                            </p>
+                        </div>
+
+                        <div class="phase-box">
+                            <h3 class="mt-0">Phase C: Generalization & Advanced Techniques</h3>
+                             <p>This phase generalizes the principles from the triangle to any N-sided polygon.</p>
+                             <p><strong>Level N: The N-gon</strong><br/>
+                             An N-gon possesses $Z_N$ cyclic symmetry. While the operators from the triangle (Global Aggregation, Circulation) generalize directly, the most elegant and powerful tool for handling $Z_N$ symmetry is the <strong>Discrete Fourier Transform (DFT)</strong>. The DFT is a mathematical change of basis that diagonalizes the rotation operator. In this new basis, a complex rotation in real space becomes a simple multiplication by a phase factor.</p>
+                             <p>The DFT of the node states $\\{\\phi_k\\}$ is a set of Fourier modes $\\{\\tilde{\\phi}_m\\}$:
+                             $$\\tilde{\\phi}_m = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} \\phi_k e^{-2\\pi i mk/N}$$
+                             </p>
+                             <p>An operator is invariant under $Z_N$ rotation if and only if it depends only on the magnitude of the Fourier modes, $|\\tilde{\\phi}_m|$. Therefore, the norms of the Fourier modes form a fundamental part of the operator basis set for any N-gon.</p>
+                        </div>
+                    `
+                },
+                {
+                    title: "Part III: The Learning Engine",
+                    content: `
+                        <h2 class="text-3xl font-bold mb-4">Part III: The Learning Engine</h2>
+                        <p>Once data is encoded in a symmetry-aware geometric structure, the learning engine can discover symbolic laws.</p>
+                        
+                        <h3>The Differentiable Proxy: Graph Neural Networks</h3>
+                        <p>A Graph Neural Network (GNN) is the ideal differentiable proxy for our N-gon structures. A GNN operates by passing "messages" between connected nodes. This message-passing mechanism can be designed to explicitly respect the $Z_N$ symmetry of the polygon, for example, by using the same convolution kernel for every node. The GNN learns a function $f_{GNN}(\\{\\phi_k\\})$ that approximates the true underlying physics while respecting the geometry.</p>
+                        
+                        <h3>Discovering Modularity with Gradients</h3>
+                        <p>As in the original AI Feynman paper, we analyze the gradient (or functional derivative) of the GNN's output with respect to its inputs, $\\nabla_{\\phi_k} f_{GNN}$, to find further simplifying structures (compositionality, separability, etc.) that were not already encoded in the geometry.</p>
+
+                        <h3>The Pareto Frontier: Complexity vs. Inaccuracy</h3>
+                        <p>The search for formulas is guided by the Pareto principle of finding the best trade-off between simplicity and accuracy.</p>
+                        <ul class="list-disc list-inside ml-4">
+                           <li><strong>Complexity ($L_d$):</strong> The Description Length of a formula is calculated based on the number and type of symbols it uses from our geometrically-aware Operator Basis Set (e.g., $\\sum, ||\\cdot||, \\text{DFT}$). Each operator has a pre-defined complexity cost.</li>
+                           <li><strong>Inaccuracy (MEDL):</strong> The Mean Error Description Length remains our robust measure of how well a formula fits the data, defined as $\\langle L_d(y_i - f(\\{\\phi_k\\}_i)) \\rangle$.</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "Part IV: The Evolving Codex",
+                    content: `
+                        <h2 class="text-3xl font-bold mb-4">Part IV: The Evolving Codex</h2>
+                        <p>A truly intelligent system must not be limited by its initial programming. The Genesis Codex is a starting point, not a straitjacket. The system must be able to evolve its own symbolic language when confronted with new phenomena that its current language cannot adequately explain.</p>
+                        <p>This is achieved through a perpetual feedback loop:</p>
+                        
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><strong>Experience & Anomaly Detection:</strong> The system ingests new data and uses its best current formula (from the Pareto frontier) to make predictions. If the inaccuracy (MEDL) for this new data is significantly higher than expected, an anomaly is detected. The current symbolic language is insufficient.</li>
+                            <li><strong>Triggering Symbol Discovery:</strong> This anomaly triggers a deeper learning phase. The GNN is re-trained specifically on the anomalous data. We then analyze the GNN's internal structure not for whole formulas, but for recurring, predictive sub-expressions.</li>
+                            <li><strong>Concept Formation (Symbol Creation):</strong> Suppose the GNN consistently uses the mathematical combination $C_k = ||\\phi_{k+1} - 2\\phi_k + \\phi_{k-1}||^2$ to make accurate predictions. The system does not know this is a discrete version of the second derivative (the Laplacian). It only knows this "concept" is useful. It therefore creates a new symbol, e.g., $\\mathcal{L}(\\phi)_k$, to represent this discovered concept.</li>
+                            <li><strong>Codex Assimilation:</strong> This new symbol, $\\mathcal{L}$, is added to the Operator Basis Set with an associated complexity cost. The entire symbolic regression engine is re-run with this expanded language. It can now find simpler, more powerful laws. For example, it might discover the symbolic law for diffusion: $\\frac{d\\phi}{dt} = -c \\cdot \\mathcal{L}(\\phi)$.</li>
+                        </ol>
+
+                        <p>Through this cycle of <strong>Experience $\\to$ Anomaly $\\to$ Discovery $\\to$ Assimilation</strong>, the system's codex grows. It bootstraps from a human-provided geometric foundation to a rich, self-discovered symbolic understanding of its world.</p>
+                    `
+                }
+            ];
+
+            // --- STATE ---
+            let currentStep = 0;
+            
+            // --- UI ELEMENTS ---
+            const stepsNav = document.getElementById('steps-nav');
+            const tutorialContent = document.getElementById('tutorial-content');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            // --- FUNCTIONS ---
+            function renderMath() {
+                if (window.renderMathInElement) {
+                    renderMathInElement(document.getElementById('tutorial-content'), {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}
+                        ],
+                        throwOnError : false,
+                        trust: true
+                    });
+                }
+            }
+            
+            function renderStep() {
+                stepsNav.innerHTML = steps.map((step, index) => `
+                    <div class="step ${index === currentStep ? 'active' : ''} cursor-pointer" onclick="goToStep(${index})">
+                        <div class="flex items-center">
+                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">${romanize(index + 1)}</div>
+                            <span class="step-title ml-4 text-lg text-gray-600">${step.title}</span>
+                        </div>
+                        ${index < steps.length - 1 ? '<div class="step-line ml-5 mt-1 border-l-2 border-gray-200 h-8"></div>' : ''}
+                    </div>
+                `).join('');
+
+                tutorialContent.innerHTML = steps[currentStep].content;
+                renderMath();
+                updateButtons();
+            }
+            
+            function updateButtons() {
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.disabled = currentStep === steps.length - 1;
+            }
+
+            function romanize(num) {
+                if (isNaN(num)) return NaN;
+                var digits = String(+num).split(""),
+                    key = ["","C","CC","CCC","CD","D","DC","DCCC","CM",
+                           "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+                           "","I","II","III","IV","V","VI","VII","VIII","IX"],
+                    roman = "",
+                    i = 3;
+                while (i--)
+                    roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+                return Array(+digits.join("") + 1).join("M") + roman;
+            }
+
+            window.goToStep = function(stepIndex) {
+                currentStep = stepIndex;
+                renderStep();
+            }
+
+            function nextStep() {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    renderStep();
+                }
+            }
+
+            function prevStep() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep();
+                }
+            }
+            
+            // --- INITIALIZATION ---
+            function init() {
+                renderStep();
+                prevBtn.addEventListener('click', prevStep);
+                nextBtn.addEventListener('click', nextStep);
+            }
+
+            // A small delay to ensure the DOM is fully ready before KaTeX runs.
+            setTimeout(init, 50);
+        });
+    </script>
+</body>
+</html>

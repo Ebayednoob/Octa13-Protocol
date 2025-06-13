@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tutorial: A Mathematical Framework for Symbolic AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMVIARBECHERiPhvsEtHxyzJysyyGOLOUbASJAQCNRTGDpgd" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0i8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURPl3dqSdxDYMZPuLv2myIqS3VEKDNkycHysLGxW4LqtBBeLFINlhn" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .step.active .step-circle {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .step.active .step-title {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+        .step .step-circle {
+            transition: all 0.3s ease;
+        }
+        .step-line {
+            height: calc(100% - 2rem);
+        }
+        .katex-display {
+            padding: 0.5rem 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">A Mathematical Framework for Symbolic AI</h1>
+            <p class="mt-2 text-lg text-gray-600">Establishing a rigorous foundation for symbolic regression based on the AI Feynman paper.</p>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Sidebar with steps -->
+            <aside class="w-full md:w-1/4">
+                <nav id="steps-nav" class="space-y-4">
+                    <!-- Steps will be dynamically inserted here -->
+                </nav>
+            </aside>
+
+            <!-- Main content -->
+            <main class="w-full md:w-3/4">
+                <div id="tutorial-content" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                    <!-- Step content will be dynamically inserted here -->
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button id="prev-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Previous</button>
+                    <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Next</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATA ---
+            const steps = [
+                {
+                    title: "Introduction",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Welcome</h2>
+                        <p class="mb-4">This tutorial establishes a formal mathematical framework for creating a <strong>Symbolic AI Data Codex</strong>. We will rigorously follow the principles of the "AI Feynman" paper to discover symbolic formulas from data.</p>
+                        <p class="mb-4">Our objective is to identify formulas that are <strong>Pareto-optimal</strong>, meaning they offer the best possible accuracy for a given level of complexity. This requires precise, information-theoretic definitions of both accuracy and complexity.</p>
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 text-indigo-700 p-4 rounded-md mt-6">
+                            <p><strong>Key Concept:</strong> Symbolic Regression is the search for a symbolic expression $f(x)$ that accurately models a given dataset $D = \\{(x_i, y_i)\\}$.</p>
+                        </div>
+                    `
+                },
+                {
+                    title: "Geometric Data Encoding",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 1: Geometric Data Encoding</h2>
+                        <p class="mb-4">Before we can learn, we must represent. The structure of our data is paramount. Here we define encoding schemes for progressively complex geometries.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="p-4 border border-gray-300 rounded-lg">
+                               <h3 class="font-semibold text-lg mb-2">Level 0: The Point (0-gon)</h3>
+                               <p>A single data packet, or point, can have internal structure. A quaternion $q$ is a perfect example, encoding rotation and magnitude in 3D space.</p>
+                               <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$q = w + x\\mathbf{i} + y\\mathbf{j} + z\\mathbf{k}$</div>
+                               <p class="text-sm text-gray-600 mt-1">This is our fundamental building block, a "point" with rich internal information.</p>
+                            </div>
+
+                            <div class="p-4 border border-gray-300 rounded-lg">
+                               <h3 class="font-semibold text-lg mb-2">Level 1: The Line (2-gon)</h3>
+                               <p>This is the simplest relational structure: two points, $\\phi_0$ and $\\phi_1$, connected by an edge. The system is defined by the state of its two nodes.</p>
+                               <p class="mt-2"><b>Natural Operator:</b> The difference or gradient. The most basic relationship is the difference between the node states.</p>
+                               <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$\\Delta \\phi = \\phi_1 - \\phi_0$</div>
+                            </div>
+                            
+                            <div class="p-4 border border-gray-300 rounded-lg">
+                               <h3 class="font-semibold text-lg mb-2">Level N: The N-gon (Polygon)</h3>
+                               <p>We generalize to a regular N-sided polygon. The system is described by a set of $N$ nodes (vertices), $\\{\\phi_k\\}_{k=0}^{N-1}$, arranged in a cycle.</p>
+                               <p class="mt-2"><b>Symmetry:</b> The structure is invariant under the cyclic group $Z_N$. A rotation sends node $k$ to node $(k+1) \\pmod N$. </p>
+                               <p class="mt-2"><b>Example - The Nonagon (9-gon):</b>
+                                 <ul>
+                                    <li><b>Data:</b> 9 nodes, $\\phi_0, \\phi_1, ..., \\phi_8$. Each $\\phi_k$ can be a vector (e.g., polygon type, spin, color).</li>
+                                    <li><b>Symmetry Group:</b> $Z_9$. Any valid symbolic formula must be invariant under a 9-fold rotation.</li>
+                                    <li><b>Invariant Operators:</b> We build operators that respect this symmetry.
+                                        <ul class="list-disc list-inside ml-4 mt-1">
+                                            <li><b>Summation (Global):</b> $\\sum_{k=0}^8 h(\\phi_k)$. Summing a local property over all nodes.</li>
+                                            <li><b>Discrete Fourier Transform (Global):</b> $\\tilde{\\phi}_m = \\sum_{k=0}^8 \\phi_k e^{-2\\pi i mk/9}$. Transforms to a "frequency" basis where rotation becomes a phase shift.</li>
+                                            <li><b>Circulation (Local):</b> $\\phi_{k+1} - \\phi_k$ (indices mod 9). A local difference that respects the cyclic structure.</li>
+                                        </ul>
+                                    </li>
+                                 </ul>
+                               </p>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "The Differentiable Proxy",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 2: The Differentiable Proxy</h2>
+                        <p class="mb-4">The core strategy is to train a neural network $f_{NN}(x)$ to act as a differentiable proxy for the unknown mystery function $f(x)$. The network architecture must respect the data's geometry defined in the previous step.</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>For point data (0-gon), a simple Feed-Forward Network suffices.</li>
+                            <li>For data on a polygon or grid (N-gon, Torus), a <strong>Graph Neural Network (GNN)</strong> is the natural choice. A GNN uses message passing between adjacent nodes, inherently respecting the defined connectivity (e.g., the edges of the nonagon).</li>
+                        </ul>
+                         <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mt-6">
+                            <p><strong>Mathematical Goal:</strong> The critical advantage of $f_{NN}(x)$ is that we can compute its gradient, $\\nabla f_{NN}$, with respect to its inputs. This gradient holds the key to unlocking the structural properties of $f(x)$.</p>
+                        </div>
+                    `
+                },
+                {
+                    title: "Discovering Modularity",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 3: Discovering Modularity via Gradients</h2>
+                        <p class="mb-4">Complex functions can often be decomposed into simpler modules. We use the gradient $\\nabla f_{NN}$ to test for these structures. Below are the key mathematical tests for vector inputs.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 border border-gray-300 rounded-lg">
+                                <h3 class="font-semibold text-lg">1. Compositionality: $f(x) = g(h(x))$</h3>
+                                <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$\\hat{\\nabla f} = \\pm\\hat{\\nabla h}$</div>
+                            </div>
+                            <div class="p-4 border border-gray-300 rounded-lg">
+                                <h3 class="font-semibold text-lg">2. Generalized Symmetry: $f(x', x'') = g(h(x'), x'')$</h3>
+                                <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$\\hat{\\nabla_{x'}f}$ is independent of $x''$</div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Advanced: Symmetries & Topologies",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 4: Symmetries in Field Theories</h2>
+                        <p class="mb-4">When our N-gon becomes a grid on a torus, we move to a field theory description. Each node $(i,j) \\in T$ has a vector of attributes $\\phi(i,j) = (p, s, c)$.</p>
+                        <div class="p-4 border border-gray-300 rounded-lg mb-4">
+                           <h3 class="font-semibold text-lg mb-2">Functional Derivatives</h3>
+                           <p>The gradient becomes a <strong>functional derivative</strong>, describing how the function $f$ changes with respect to a change in one of the fields at a particular point.</p>
+                           <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$ \\frac{\\delta f}{\\delta p(i,j)}, \\quad \\frac{\\delta f}{\\delta s(i,j)}, \\quad \\frac{\\delta f}{\\delta c(i,j)} $</div>
+                        </div>
+                        <div class="p-4 border border-gray-300 rounded-lg">
+                           <h3 class="font-semibold text-lg mb-2">Enforcing Known Symmetries</h3>
+                           <p>If the system has a known symmetry, like a "modulo-9 rotation" ($R_9$), we search for symbolic expressions that are guaranteed to be invariant under that symmetry ($f(\\phi) = f(R_9 \\cdot \\phi)$). This dramatically prunes the search space.</p>
+                        </div>
+                    `
+                },
+                {
+                    title: "Formalizing the Pareto Frontier",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 5: The Formal Pareto Frontier</h2>
+                        <p class="mb-4">The goal remains finding Pareto-optimal functions, but our definitions must now accommodate the new data structures.</p>
+                        <div class="p-4 border border-gray-300 rounded-lg mb-4">
+                           <h3 class="font-semibold text-lg mb-2">Complexity: Description Length ($L_d$)</h3>
+                           <p>The basis set of functions is expanded to include operators natural to the geometry. The complexity $L_d$ must account for these.</p>
+                        </div>
+                        <div class="p-4 border border-gray-300 rounded-lg">
+                           <h3 class="font-semibold text-lg mb-2">Inaccuracy: Mean Error Description Length (MEDL)</h3>
+                           <p>This definition remains robustly unchanged. The inaccuracy is the description length of the errors between the true outputs $y_i$ and the predictions of our symbolic formula $f(\\phi_i)$.</p>
+                           <div class="bg-gray-50 p-2 mt-2 rounded-md text-center">$\\text{Inaccuracy} = \\langle L_d(y_i - f(\\phi_i)) \\rangle$</div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Building the Codex",
+                    content: `
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Step 6: The Generalized Symbolic AI Data Codex</h2>
+                        <p class="mb-4">The final codex contains Pareto-optimal symbolic expressions that operate on the specified data topology. These formulas are inherently more complex but capture a much richer understanding of the system's physics or dynamics.</p>
+                        <div id="codex-output" class="p-6 bg-gray-800 text-white rounded-lg font-mono text-sm shadow-inner">
+                            <h3 class="text-lg font-semibold text-green-400 mb-2">// Symbolic AI Data Codex (Nonagon Protocol)</h3>
+                            <div id="codex-formulas">
+                               <p class="mt-4 text-gray-400">// Example of a potential formula for a nonagon:</p>
+                               <p><span class="text-blue-400">expression:</span> " $f(\\{\\phi_k\\}) = c_1 \\sum_{k=0}^8 \\text{spin}_k + c_2 \\sum_{k=0}^8 (\\text{color}_{k+1} - \\text{color}_k)^2$ "</p>
+                               <p class="mt-2 text-gray-400">// This formula combines a global sum (invariant) and a sum of local differences (also invariant), representing a potential physical law on the nonagon.</p>
+                            </div>
+                        </div>
+                    `
+                }
+            ];
+
+            // --- STATE ---
+            let currentStep = 0;
+            
+            // --- UI ELEMENTS ---
+            const stepsNav = document.getElementById('steps-nav');
+            const tutorialContent = document.getElementById('tutorial-content');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            // --- FUNCTIONS ---
+            function renderMath() {
+                if (window.renderMathInElement) {
+                    renderMathInElement(document.getElementById('tutorial-content'), {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}
+                        ],
+                        throwOnError : false,
+                        trust: true
+                    });
+                }
+            }
+            
+            function renderStep() {
+                stepsNav.innerHTML = steps.map((step, index) => `
+                    <div class="step ${index === currentStep ? 'active' : ''} cursor-pointer" onclick="goToStep(${index})">
+                        <div class="flex items-center">
+                            <div class="step-circle w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">${index + 1}</div>
+                            <span class="step-title ml-4 text-lg text-gray-600">${step.title}</span>
+                        </div>
+                        ${index < steps.length - 1 ? '<div class="step-line ml-4 mt-1 border-l-2 border-gray-200 h-8"></div>' : ''}
+                    </div>
+                `).join('');
+
+                tutorialContent.innerHTML = steps[currentStep].content;
+                renderMath();
+                updateButtons();
+            }
+            
+            function updateButtons() {
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.disabled = currentStep === steps.length - 1;
+            }
+
+            window.goToStep = function(stepIndex) {
+                currentStep = stepIndex;
+                renderStep();
+            }
+
+            function nextStep() {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    renderStep();
+                }
+            }
+
+            function prevStep() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep();
+                }
+            }
+            
+            // --- INITIALIZATION ---
+            function init() {
+                renderStep();
+                prevBtn.addEventListener('click', prevStep);
+                nextBtn.addEventListener('click', nextStep);
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
